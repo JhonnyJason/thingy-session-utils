@@ -23,11 +23,20 @@ async function testAuthCode() {
 
         var seedHex = await secUtl.createSharedSecretHashHex(alicePrivHex, alicePubHex, context)
         var seedBytes = Buffer.from(seedHex, "hex")
+        
         var authCodeHex = await sess.createAuthCodeHex(seedHex, request1)
         var authCodeBytes = await sess.createAuthCodeBytes(seedBytes, request1)
+        
         if(authCodeHex != (Buffer.from(authCodeBytes)).toString("hex")) {
             throw new Error("Byte version and Hex version did not match!")
         }
+
+        var request1String = JSON.stringify(request1)
+        var authCodeHexFromString = await sess.createAuthCodeHex(seedHex, request1String)
+        if(authCodeHex != authCodeHexFromString) {
+            throw new Error("Passing the same request as string did not give us the same authCode!")
+        }
+        
 
         let success = true
         let hexMS = 0
@@ -102,6 +111,12 @@ async function testCreateSessionKey() {
         var sessionKeyBytes = await sess.createSessionKeyBytes(seedBytes, request1)
         if(sessionKeyHex != (Buffer.from(sessionKeyBytes)).toString("hex")) {
             throw new Error("Byte version and Hex version did not match!")
+        }
+
+        var request1String = JSON.stringify(request1)
+        var sessionKeyHexFromString = await sess.createSessionKeyHex(seedHex, request1String)        
+        if(sessionKeyHex != sessionKeyHexFromString) {
+            throw new Error("Passing the same request as string did not give us the same sessionKey!")
         }
 
         var testCipher = await secUtl.symmetricEncrypt(testString, sessionKeyHex)
