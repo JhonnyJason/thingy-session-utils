@@ -21,7 +21,7 @@ async function testAuthCode() {
 
         var context = "lenny@extensivlyon.coffee/mega-context"
 
-        var seedHex = await secUtl.createSharedSecretHashHex(alicePrivHex, alicePubHex, context)
+        var seedHex = await secUtl.diffieHellmanSecretHashHex(alicePrivHex, alicePubHex, context)
         var seedBytes = Buffer.from(seedHex, "hex")
         
         var authCodeHex = await sess.createAuthCodeHex(seedHex, request1)
@@ -105,7 +105,7 @@ async function testCreateSessionKey() {
 
         var context = "lenny@extensivlyon.coffee/mega-context"
 
-        var seedHex = await secUtl.createSharedSecretHashHex(alicePrivHex, alicePubHex, context)
+        var seedHex = await secUtl.diffieHellmanSecretHashHex(alicePrivHex, alicePubHex, context)
         var seedBytes = Buffer.from(seedHex, "hex")
         var sessionKeyHex = await sess.createSessionKeyHex(seedHex, request1)
         var sessionKeyBytes = await sess.createSessionKeyBytes(seedBytes, request1)
